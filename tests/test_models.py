@@ -15,3 +15,22 @@ def test_read_product():
     assert found.category == "Electronics"
     assert found.price == 100.0
     assert found.available is True
+
+
+def test_update_product():
+    # Arrange: create and save the original product
+    product = Product(name="Old Name", category="Books", price=20.0, available=True)
+    product.save()
+
+    # Act: update some fields
+    product.name = "Updated Name"
+    product.price = 25.0
+    product.save()
+
+    # Retrieve again to verify changes
+    updated = Product.find_by_id(product.id)
+
+    # Assert
+    assert updated is not None
+    assert updated.name == "Updated Name"
+    assert updated.price == 25.0
