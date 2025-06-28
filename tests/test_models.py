@@ -16,7 +16,6 @@ def test_read_product():
     assert found.price == 100.0
     assert found.available is True
 
-
 def test_update_product():
     # Arrange: create and save the original product
     product = Product(name="Old Name", category="Books", price=20.0, available=True)
@@ -34,3 +33,15 @@ def test_update_product():
     assert updated is not None
     assert updated.name == "Updated Name"
     assert updated.price == 25.0
+
+def test_delete_product():
+    # Arrange: create and save a product
+    product = Product(name="Delete Me", category="Books", price=15.0, available=True)
+    product.save()
+
+    # Act: delete the product
+    deleted = Product.delete_by_id(product.id)
+
+    # Assert: verify the product was deleted
+    assert deleted is True
+    assert Product.find_by_id(product.id) is None
