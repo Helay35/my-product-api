@@ -1,17 +1,20 @@
+# models/product.py
+
 class Product:
-    _db = {}  # class-level "database" dictionary
-    _id_counter = 1
+    _db = {}  # class-level dictionary to simulate a database
+    _next_id = 1
 
     def __init__(self, name, category, price, available):
-        self.id = Product._id_counter
-        Product._id_counter += 1
-
+        self.id = None
         self.name = name
         self.category = category
         self.price = price
         self.available = available
 
     def save(self):
+        if self.id is None:
+            self.id = Product._next_id
+            Product._next_id += 1
         Product._db[self.id] = self
 
     @classmethod
@@ -20,11 +23,15 @@ class Product:
 
     @classmethod
     def delete_by_id(cls, product_id):
-        if product_id in cls._db:
-            del cls._db[product_id]
-            return True  # Return True when deleted successfully
+        product = cls._db.pop(product_id, None)
+        if product:
+            return True
         return False
 
     @classmethod
     def all(cls):
         return list(cls._db.values())
+
+    @classmethod
+    def find_by_name(cls, name):
+        return [p for p in cls._db.values() if p.name == name]
