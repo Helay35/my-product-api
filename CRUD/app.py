@@ -51,6 +51,18 @@ def update_product(product_id):
             return jsonify(product)
     return jsonify({'error': 'Product not found'}), 404
 
+# DELETE product by ID
+@app.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    global products
+    updated_products = [p for p in products if p['id'] != product_id]
+
+    if len(updated_products) == len(products):
+        return jsonify({'error': 'Product not found'}), 404
+
+    products = updated_products
+    return jsonify({'message': f'Product with ID {product_id} deleted.'}), 200
+
 # Start the Flask server
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
