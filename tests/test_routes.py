@@ -1,5 +1,5 @@
 import pytest
-from CRUD.products import app  # Adjust this import if your app is located elsewhere
+from CRUD.app import app
 
 @pytest.fixture
 def client():
@@ -7,26 +7,25 @@ def client():
         yield client
 
 def test_read_product_route(client):
-    # Act: request the product by id 1 (adjust id if needed)
     response = client.get('/products/1')
-
-    # Assert
     assert response.status_code == 200
     data = response.get_json()
-    assert data is not None
-    assert 'id' in data
     assert data['id'] == 1
+    assert 'name' in data
 
 def test_list_products_by_category(client):
-    category = "office"  # Adjust this category based on your data
-
-    # Act: request products filtered by category
-    response = client.get(f'/products?category={category}')
-
-    # Assert
+    response = client.get('/products?category=office')
     assert response.status_code == 200
-    data = response.get_json()
-    assert isinstance(data, list)
-    for product in data:
-        assert 'category' in product
-        assert product['category'] == category
+    products = response.get_json()
+    assert isinstance(products, list)
+    for product in products:
+        assert product['category'] == 'office'
+
+def test_list_products_by_availability(client):
+    response = client.get('/products?available=true')
+    assert response.status_code == 200
+    products = response.get_json()
+    assert isinstance(products, list)
+    for product in products:
+        assert 'available' in product
+        assert product['available'] is True
