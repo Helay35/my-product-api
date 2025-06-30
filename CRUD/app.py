@@ -20,14 +20,17 @@ def get_product(product_id):
             return jsonify(product)
     return jsonify({'error': 'Product not found'}), 404
 
-# READ list of products with optional filtering
+# LIST all products / list by name / category / availability
 @app.route('/products', methods=['GET'])
 def list_products():
+    name = request.args.get('name')
     category = request.args.get('category')
     available = request.args.get('available')
 
     filtered = products
 
+    if name:
+        filtered = [p for p in filtered if name.lower() in p.get('name', '').lower()]
     if category:
         filtered = [p for p in filtered if p.get('category') == category]
     if available is not None:
